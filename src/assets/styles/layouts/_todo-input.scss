@@ -1,0 +1,15 @@
+.todo-input {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    .input__field {
+        padding-right: 8rem;
+    }
+
+    .input__button {
+        position: absolute;
+        right: 0;
+        top: 0;
+    }
+}

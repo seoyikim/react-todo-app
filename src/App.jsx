@@ -1,42 +1,57 @@
+import './assets/styles/main.scss';
 import { useState } from "react";
 import TodoHeader from "./componets/TodoHeader";
 import TodoInput from "./componets/TodoInput";
 import TodoList from "./componets/TodoList";
+import TodoItem from "./componets/TodoItem";
 
 function fetchTodos() {
-  const result = [];
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    result.push(key);
-  }
-  return result;
+  const todos = localStorage.getItem('todos');
+  return todos ? JSON.parse(todos) : [];
 }
 
 function App() {
   const [todos, setTodos] = useState(fetchTodos());
 
   const addTodo = (todo) => {
-    localStorage.setItem(todo, todo);
-    setTodos((currentTodos) => {
-      return [todo, ...currentTodos];
-    });
+    if (todos.some(todoItem => todoItem.text === todo.text)) {
+      alert('이미 존재하는 할 일입니다.');
+    return;
+    }
+    
+    const newTodos = [todo, ...todos];  // 객체를 그대로 사용
+      localStorage.setItem('todos', JSON.stringify(newTodos));
+      setTodos(newTodos);
   }
 
   const removeTodo = (todo) => {
-    const result = todos.filter(todoItem => {
-      if (todoItem !== todo) {
-        return true;
-      }
-    });
-    setTodos(result);
-    localStorage.removeItem(todo);
+    const newTodos = todos.filter(todoItem => todoItem.text !== todo.text);
+    localStorage.setItem('todos', JSON.stringify(newTodos));
+    setTodos(newTodos);
+  }
+
+  const toggleTodo = (todo) => {
+    const newTodos = todos.map(todoItem => 
+      todoItem.text === todo.text 
+        ? { ...todoItem, completed: !todoItem.completed }
+        : todoItem
+    );
+    localStorage.setItem('todos', JSON.stringify(newTodos));
+    setTodos(newTodos);
   }
 
   return (
-    <div>
-      <TodoHeader />
-      <TodoInput onTodoAdd={addTodo} />
-      <TodoList todos={todos} onTodoRemove={removeTodo} />
+    <div className="app">
+      <div className="todo">
+        <TodoHeader />
+        <TodoInput onTodoAdd={addTodo} />
+        <TodoItem todos={todos} />
+        <TodoList 
+          todos={todos} 
+          onTodoRemove={removeTodo} 
+          onTodoToggle={toggleTodo}
+        />
+      </div>
     </div>
   )
 }
