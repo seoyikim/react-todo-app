@@ -1,12 +1,23 @@
 .title {
-    &-1 {
+    &--xl {
         font-size: 3rem;
         font-weight: 700;
         color: #022061;
+    }
 
-        &__icon {
-            font-size: 2rem;
-            vertical-align: 5px;
-        }
+    &__icon {
+        font-size: 2rem;
+        vertical-align: 5px;
+    }
+}
+
+
+.message {
+    &-empty {
+        font-size: 1.2rem;
+        font-weight: 500;
+        color: #022061;
+        text-align: center;
+        margin: 5rem 0;
     }
 }

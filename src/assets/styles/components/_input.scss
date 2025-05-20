@@ -66,6 +66,13 @@
             align-items: center;
             justify-content: center;
 
+            &:hover {
+                &::before,
+                &::after {
+                    background:#000;
+                }
+            }
+
             &::before,
             &::after {
                 content: '';

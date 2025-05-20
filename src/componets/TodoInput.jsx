@@ -10,8 +10,10 @@ function TodoInput({ onTodoAdd }) {
     
   const handleClick = () => {
     if (!inputText.trim()) {
+       alert("할 일을 입력해주세요.");
       return;
     }
+    
     onTodoAdd({ text: inputText, completed: false });
     setInputText('');
   }
@@ -19,8 +21,9 @@ function TodoInput({ onTodoAdd }) {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter') {
       if (!inputText.trim()) {
-        return;
-      }
+       alert("할 일을 입력해주세요.");
+      return;
+    }
       onTodoAdd({ text: inputText, completed: false });
       setInputText('');
     }

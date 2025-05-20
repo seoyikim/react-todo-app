@@ -1,5 +1,6 @@
 import './assets/styles/main.scss';
 import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 import TodoHeader from "./componets/TodoHeader";
 import TodoInput from "./componets/TodoInput";
 import TodoList from "./componets/TodoList";
@@ -16,23 +17,24 @@ function App() {
   const addTodo = (todo) => {
     if (todos.some(todoItem => todoItem.text === todo.text)) {
       alert('이미 존재하는 할 일입니다.');
-    return;
+      return;
     }
     
-    const newTodos = [todo, ...todos];  // 객체를 그대로 사용
-      localStorage.setItem('todos', JSON.stringify(newTodos));
-      setTodos(newTodos);
+    const newTodo = { ...todo, id: uuidv4() };
+    const newTodos = [newTodo, ...todos];
+    localStorage.setItem('todos', JSON.stringify(newTodos));
+    setTodos(newTodos);
   }
 
   const removeTodo = (todo) => {
-    const newTodos = todos.filter(todoItem => todoItem.text !== todo.text);
+    const newTodos = todos.filter(todoItem => todoItem.id !== todo.id);
     localStorage.setItem('todos', JSON.stringify(newTodos));
     setTodos(newTodos);
   }
 
   const toggleTodo = (todo) => {
     const newTodos = todos.map(todoItem => 
-      todoItem.text === todo.text 
+      todoItem.id === todo.id 
         ? { ...todoItem, completed: !todoItem.completed }
         : todoItem
     );
