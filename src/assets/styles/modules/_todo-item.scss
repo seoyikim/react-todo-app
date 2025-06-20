@@ -1,24 +1,8 @@
 .todo-counter {
-    &__group {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem;
-    }
-
-    &__title {
-        font-size: 1rem;
-    }
-
-    &__count {
-        font-size: 1rem;
-        font-weight: 500;
-        width: 32px;
-        height: 32px;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 100%;
-        background-color: #eee;
+    margin-top:1rem;
+    &__select {
+        font-size: 0.875rem;
+        color: #022061;
+        cursor:pointer;
     }
 }

@@ -1,61 +1,61 @@
 import './assets/styles/main.scss';
-import { useState } from "react";
-import { v4 as uuidv4 } from 'uuid';
+import { useMemo } from "react";
 import TodoHeader from "./componets/TodoHeader";
 import TodoInput from "./componets/TodoInput";
 import TodoList from "./componets/TodoList";
-import TodoItem from "./componets/TodoItem";
-
-function fetchTodos() {
-  const todos = localStorage.getItem('todos');
-  return todos ? JSON.parse(todos) : [];
-}
+import TodoFilter from "./componets/TodoFilter";
+import Toast from "./componets/popup/Toast";
+import { useToast } from './hooks/useToast';
+import { useTodos } from './hooks/useTodos';
 
 function App() {
-  const [todos, setTodos] = useState(fetchTodos());
+  const { toasts, showToast } = useToast();
+  const { 
+    todos, 
+    filteredTodos,
+    filter,
+    setFilter,
+    addTodo, 
+    removeTodo, 
+    toggleTodo, 
+    editTodo 
+  } = useTodos(showToast);
 
-  const addTodo = (todo) => {
-    if (todos.some(todoItem => todoItem.text === todo.text)) {
-      alert('이미 존재하는 할 일입니다.');
-      return;
-    }
-    
-    const newTodo = { ...todo, id: uuidv4() };
-    const newTodos = [newTodo, ...todos];
-    localStorage.setItem('todos', JSON.stringify(newTodos));
-    setTodos(newTodos);
-  }
+  // TodoList 컴포넌트에 전달할 props를 메모이제이션
+  const todoListProps = useMemo(() => ({
+    todos: filteredTodos,
+    onTodoRemove: removeTodo,
+    onTodoToggle: toggleTodo,
+    onTodoEdit: editTodo,
+    filter
+  }), [filteredTodos, removeTodo, toggleTodo, editTodo, filter]);
 
-  const removeTodo = (todo) => {
-    const newTodos = todos.filter(todoItem => todoItem.id !== todo.id);
-    localStorage.setItem('todos', JSON.stringify(newTodos));
-    setTodos(newTodos);
-  }
-
-  const toggleTodo = (todo) => {
-    const newTodos = todos.map(todoItem => 
-      todoItem.id === todo.id 
-        ? { ...todoItem, completed: !todoItem.completed }
-        : todoItem
-    );
-    localStorage.setItem('todos', JSON.stringify(newTodos));
-    setTodos(newTodos);
-  }
+  // TodoFilter 컴포넌트에 전달할 props를 메모이제이션
+  const TodoFilterProps = useMemo(() => ({
+    todos,
+    onFilterChange: setFilter
+  }), [todos, setFilter]);
 
   return (
     <div className="app">
       <div className="todo">
         <TodoHeader />
         <TodoInput onTodoAdd={addTodo} />
-        <TodoItem todos={todos} />
-        <TodoList 
-          todos={todos} 
-          onTodoRemove={removeTodo} 
-          onTodoToggle={toggleTodo}
-        />
+        <TodoFilter {...TodoFilterProps} />
+        <TodoList {...todoListProps} />
+      </div>
+      <div className="toast-container">
+        {toasts.map((toast) => (
+          <Toast 
+            key={toast.id}
+            message={toast.message}
+            isVisible={toast.isVisible}
+            type={toast.type}
+          />
+        ))}
       </div>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;
